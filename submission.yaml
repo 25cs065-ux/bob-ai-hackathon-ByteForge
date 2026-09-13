@@ -9,51 +9,65 @@
 # =============================================================================
 
 team:
-  name: ""                             # REQUIRED — e.g., "Orion Squad"
-  track: ""                            # REQUIRED — one of: AI | DevOps | Sustainability | Open
+  name: "ByteForge"                             # REQUIRED — e.g., "Orion Squad"
+  track: "AI"                            # REQUIRED — one of: AI | DevOps | Sustainability | Open
   lead:
-    name: ""                           # REQUIRED — e.g., "Alice Chen"
-    email: ""                          # REQUIRED — e.g., "alice.chen@ibm.com"
+    name: "Patel Khushi"                           # REQUIRED — e.g., "Alice Chen"
+    email: "25cs065@charusat.edu.in"                          # REQUIRED — e.g., "alice.chen@ibm.com"
   members:
-    - name: ""                         # REQUIRED — Team member 1
-      email: ""
-    - name: ""                         # Add more members by copying the two lines above
-      email: ""
-    - name: ""
-      email: ""
+    - name: "Nandani Patel"                         # REQUIRED — Team member 1
+      email: "25cs073@charusat.edu.in"
+    - name: "Siddhi Panchal"                         # Add more members by copying the two lines above
+      email: "25ce066@charusat.edu.in"
+    - name: "Yatri Ajaybhai Dekivadiya"
+      email: "25ce021@charusat.edu.in"
 
 submission:
-  title: ""                            # REQUIRED — Project display name, e.g., "SmartOps Dashboard"
+  title: "Threat Intelligence Correlation & Alert Prioritisation Assistant"                            # REQUIRED — Project display name, e.g., "SmartOps Dashboard"
 
   problem_statement: >                 # REQUIRED — 1-3 sentences. What problem? Who has it?
-    Replace this text with a concise description of the real-world problem
-    your project addresses and who experiences it.
+    Defence analysts receive thousands of alerts daily from SIEM systems,
+    satellite feeds, cyber sensors, and intelligence reports, all in different
+    formats — no human team can read them all. Missing a genuine threat is
+    catastrophic, while chasing false positives wastes critical resources,
+    and commanders need threat assessments in a clear, structured format
+    within minutes, not hours.
+
 
   solution_summary: >                  # REQUIRED — 1-3 sentences. What did you build?
-    Replace this text with a clear description of your solution
-    and how it addresses the problem above.
+    Our solution ingests multi-source threat feeds, normalizes and correlates
+    related alerts into single incidents, scores and prioritizes them using
+    AI-driven risk and behavioural analysis, maps attacker techniques to the
+    MITRE ATT&CK framework, and generates prioritised BLUF (Bottom Line Up
+    Front) investigation summaries so commanders get a clear threat picture
+    in minutes.
 
   key_features:                        # REQUIRED — List 3 to 5 specific features you implemented
-    - ""                               # e.g., "Real-time pipeline anomaly detection using watsonx.ai"
-    - ""
-    - ""
-    - ""                               # optional 4th
+    - "AI-driven multi-source alert correlation and incident clustering (SIEM, sensors, intel reports, satellite feeds)"                               # e.g., "Real-time pipeline anomaly detection using watsonx.ai"
+    - "Dynamic risk scoring, prioritisation, and Threat DNA behavioural fingerprinting to catch attackers who change IP/malware"
+    - "MITRE ATT&CK technique mapping with Cyber-Physical Threat Fusion linking cyber alerts to satellite/geospatial signals"
+    - "AI Investigation Assistant and auto-generated BLUF reports with predictive kill-chain forecasting of the attacker's next move"                               # optional 4th
     - ""                               # optional 5th
 
   tech_stack:
-    languages: []                      # REQUIRED — e.g., ["Python", "TypeScript"]
+    languages: ["Python"]                      # REQUIRED — e.g., ["Python", "TypeScript"]
     frameworks: []                     # e.g., ["FastAPI", "React"]
-    ibm_technologies: []               # e.g., ["watsonx.ai", "IBM Bob", "IBM Cloud Functions"]
+    ibm_technologies: ["IBM Bob"]               # e.g., ["watsonx.ai", "IBM Bob", "IBM Cloud Functions"]
     databases: []                      # e.g., ["PostgreSQL", "Redis"]
     other: []                          # e.g., ["Docker", "GitHub Actions", "Slack API"]
 
   what_we_are_most_proud_of: >         # Optional but recommended — guides judges to your best work
-    Replace with what aspect of the submission you consider strongest
-    and want judges to pay special attention to.
+    The Threat DNA behavioural fingerprinting and Cyber-Physical Threat Fusion
+    features go beyond standard signature-based correlation — they detect
+    attackers who evade detection by changing infrastructure, and fuse cyber
+    alerts with physical/satellite signals to give commanders a genuinely
+    unified threat picture.
 
   known_limitations: >                 # Optional but recommended — be honest about gaps
-    Replace with any known limitations, incomplete features,
-    or shortcuts taken due to time constraints.
+    Built within a 2-day hackathon window — threat intelligence enrichment
+    and live external feeds are simulated/mocked rather than connected to
+    real production data sources, and the dashboard covers core workflows
+    rather than the full analyst toolset.
 
 # =============================================================================
 # ARTIFACT LOCATIONS
