@@ -117,3 +117,20 @@ def build_timeline(incident: Incident) -> Incident:
 
     incident.attack_timeline = timeline
     return incident
+if __name__ == "__main__":
+    from shared.schemas import Incident, NormalizedAlert
+
+    sample_alert = NormalizedAlert(
+        alert_id="TEST-001",
+        timestamp="2024-01-15T10:00:00Z",
+        source="siem",
+        ip="203.0.113.10",
+        asset="server-01",
+        severity="critical",
+        event_type="privilege_escalation",
+        raw_data={},
+    )
+    incident = Incident(incident_id="INC-TEST-001", alerts=[sample_alert])
+
+    result = build_timeline(incident)
+    print("attack_timeline:", result.attack_timeline)
