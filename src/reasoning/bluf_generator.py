@@ -30,14 +30,22 @@ def _extract_alerts(incident: Incident) -> dict:
     }
 
 
+def _get_physical_correlation(incident: Incident):
+    """Return the physical_correlation dict only if it's actually correlated, else None."""
+    pc = incident.physical_correlation
+    if pc and pc.get("correlated"):
+        return pc
+    return None
+
+
 # ---------------------------------------------------------------------------
 # Section builders
 # ---------------------------------------------------------------------------
 
 def _build_threat(incident: Incident, al: dict) -> str:
-    """Bottom-line threat statement."""
     priority = incident.priority or "Unknown"
     risk = incident.risk_score
+    pc = _get_physical_correlation(incident)
 
     if incident.is_false_positive is True:
         reason = incident.false_positive_reason or "no specific reason recorded"
@@ -65,16 +73,16 @@ def _build_threat(incident: Incident, al: dict) -> str:
     if incident.threat_intel:
         parts.append("Threat intelligence indicators are present.")
 
-    if incident.physical_correlation:
-        signal = incident.physical_correlation.get("physical_signal", "physical signal")
+    if pc:
+        signal = pc.get("physical_signal", "physical signal")
         parts.append(f"Physical signal detected: {signal}.")
 
     return " ".join(parts) if parts else "Insufficient evidence to characterise the threat."
 
 
 def _build_impact(incident: Incident, al: dict) -> str:
-    """Potential impact based on available evidence."""
     parts = []
+    pc = _get_physical_correlation(incident)
 
     if al["assets"]:
         parts.append(f"Potentially affected asset(s): {_format_list(al['assets'])}.")
@@ -82,7 +90,6 @@ def _build_impact(incident: Incident, al: dict) -> str:
     if al["ips"]:
         parts.append(f"Involved IP(s): {_format_list(al['ips'])}.")
 
-    # Event-type driven impact statements
     et_lower = [e.lower() for e in al["unique_event_types"]]
     if any("privilege" in e or "escalat" in e for e in et_lower):
         parts.append("Potential for unauthorised privilege escalation on affected system(s).")
@@ -93,7 +100,6 @@ def _build_impact(incident: Incident, al: dict) -> str:
     if any("login" in e or "auth" in e or "brute" in e for e in et_lower):
         parts.append("Targeted accounts may be at risk of compromise.")
 
-    # MITRE-technique driven impact
     techs = incident.mitre_techniques or []
     if "T1068" in techs:
         parts.append("Privilege escalation has been observed.")
@@ -102,8 +108,8 @@ def _build_impact(incident: Incident, al: dict) -> str:
     if "T1041" in techs:
         parts.append("Data may have been exfiltrated over a command-and-control channel.")
 
-    if incident.physical_correlation:
-        loc = incident.physical_correlation.get("asset_location", "the affected site")
+    if pc:
+        loc = pc.get("asset_location", "the affected site")
         parts.append(
             f"Physical correlation at {loc} suggests a potential broader impact."
         )
@@ -114,10 +120,9 @@ def _build_impact(incident: Incident, al: dict) -> str:
 
 
 def _build_confidence(incident: Incident, al: dict) -> str:
-    """Evidence-based confidence level: High / Medium / Low."""
     score = 0
+    pc = _get_physical_correlation(incident)
 
-    # Multiple independent alerts
     if al["count"] >= 5:
         score += 3
     elif al["count"] >= 2:
@@ -125,27 +130,22 @@ def _build_confidence(incident: Incident, al: dict) -> str:
     elif al["count"] == 1:
         score += 1
 
-    # Alert severity
     if al["high_sev_count"] >= 2:
         score += 2
     elif al["high_sev_count"] == 1:
         score += 1
 
-    # MITRE techniques
     if len(incident.mitre_techniques or []) >= 3:
         score += 2
     elif len(incident.mitre_techniques or []) >= 1:
         score += 1
 
-    # Threat intel present
     if incident.threat_intel:
         score += 2
 
-    # Physical correlation
-    if incident.physical_correlation:
+    if pc:
         score += 2
 
-    # Multiple sources
     sources = list({a.source for a in (incident.alerts or []) if a.source})
     if len(sources) >= 3:
         score += 2
@@ -160,8 +160,8 @@ def _build_confidence(incident: Incident, al: dict) -> str:
 
 
 def _build_evidence(incident: Incident, al: dict) -> str:
-    """Concrete evidence summary."""
     parts = []
+    pc = _get_physical_correlation(incident)
 
     if al["count"]:
         sev_summary = ", ".join(sorted(set(al["severities"]), reverse=True))
@@ -191,8 +191,7 @@ def _build_evidence(incident: Incident, al: dict) -> str:
             f"Threat intelligence indicators present for: {', '.join(str(k) for k in keys)}."
         )
 
-    if incident.physical_correlation:
-        pc = incident.physical_correlation
+    if pc:
         signal = pc.get("physical_signal", "unknown signal")
         satellite = pc.get("satellite_flag", False)
         sat_note = " (satellite flag set)" if satellite else ""
@@ -209,8 +208,8 @@ def _build_evidence(incident: Incident, al: dict) -> str:
 
 
 def _build_next_steps(incident: Incident, al: dict) -> list:
-    """Practical investigation next steps (recommendations only)."""
     steps = []
+    pc = _get_physical_correlation(incident)
 
     if al["assets"]:
         steps.append(
@@ -258,7 +257,7 @@ def _build_next_steps(incident: Incident, al: dict) -> list:
             "threat intelligence indicators."
         )
 
-    if incident.physical_correlation:
+    if pc:
         steps.append(
             "Validate the physical/geospatial signal against the affected "
             "asset's expected activity."
@@ -292,7 +291,6 @@ def _build_next_steps(incident: Incident, al: dict) -> list:
 def generate_bluf_report(incident: Incident) -> Incident:
     """
     Feature #12: BLUF Report Generator.
-    Fill: incident.bluf_report (dict with keys: threat, impact, confidence, evidence, next_steps)
     """
     al = _extract_alerts(incident)
 

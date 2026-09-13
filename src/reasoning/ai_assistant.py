@@ -6,10 +6,6 @@ from shared.schemas import Incident
 # ---------------------------------------------------------------------------
 
 def _collect_evidence(incident: Incident) -> dict:
-    """
-    Gather all available evidence fields into a single dict so every
-    answer-builder can access them without repeating boilerplate.
-    """
     alerts = incident.alerts or []
 
     severities = [a.severity for a in alerts if a.severity]
@@ -19,6 +15,10 @@ def _collect_evidence(incident: Incident) -> dict:
     ips = list({a.ip for a in alerts if a.ip})
 
     high_sev_count = sum(1 for s in severities if s in ("high", "critical"))
+
+    # Only treat physical_correlation as present when it's actually correlated
+    pc = incident.physical_correlation
+    physical_correlation = pc if (pc and pc.get("correlated")) else None
 
     return {
         "alert_count": len(alerts),
@@ -35,14 +35,13 @@ def _collect_evidence(incident: Incident) -> dict:
         "mitre_techniques": incident.mitre_techniques or [],
         "attack_timeline": incident.attack_timeline or [],
         "threat_intel": incident.threat_intel or {},
-        "physical_correlation": incident.physical_correlation,
+        "physical_correlation": physical_correlation,
         "threat_dna_signature": incident.threat_dna_signature,
         "similar_past_incidents": incident.similar_past_incidents or [],
     }
 
 
 def _format_list(items: list, limit: int = 5) -> str:
-    """Format a list as a comma-separated string, truncating if needed."""
     shown = items[:limit]
     result = ", ".join(str(i) for i in shown)
     if len(items) > limit:
@@ -222,7 +221,6 @@ def _answer_recommendation(ev: dict) -> str:
 
 
 def _general_summary(ev: dict) -> str:
-    """Fall-through: produce a broad evidence summary."""
     return _answer_criticality(ev)
 
 
@@ -247,10 +245,6 @@ _ROUTES = [
 
 
 def answer_analyst_question(incident: Incident, question: str = "Why is this critical?") -> str:
-    """
-    Feature #11: AI Investigation Assistant.
-    Answer analyst questions grounded in the incident's evidence.
-    """
     ev = _collect_evidence(incident)
     q_lower = question.lower()
 
@@ -258,7 +252,6 @@ def answer_analyst_question(incident: Incident, question: str = "Why is this cri
         if any(kw in q_lower for kw in keywords):
             return handler(ev)
 
-    # Unrecognised question — return a general summary instead of an error
     return _general_summary(ev)
 
 
@@ -270,7 +263,6 @@ def generate_ai_explanation(incident: Incident) -> Incident:
     priority = ev["priority"]
     risk = ev["risk_score"]
 
-    # Lead with priority / risk
     if risk is not None:
         parts.append(
             f"The incident is classified as {priority} with a risk score of {risk:.1f}."
@@ -280,7 +272,6 @@ def generate_ai_explanation(incident: Incident) -> Incident:
     else:
         parts.append("The incident has been recorded with limited scoring information.")
 
-    # False-positive status
     if ev["is_false_positive"] is True:
         reason = ev["false_positive_reason"] or "No reason recorded."
         parts.append(
@@ -289,7 +280,6 @@ def generate_ai_explanation(incident: Incident) -> Incident:
     elif ev["is_false_positive"] is False:
         parts.append("It has been assessed as a genuine threat.")
 
-    # Alert volume and severity
     if ev["alert_count"]:
         if ev["high_sev_count"]:
             parts.append(
@@ -299,31 +289,26 @@ def generate_ai_explanation(incident: Incident) -> Incident:
         else:
             parts.append(f"It contains {ev['alert_count']} alert(s).")
 
-    # Event types
     unique_types = list(set(ev["event_types"]))
     if unique_types:
         parts.append(
             f"Observed activity includes: {_format_list(unique_types)}."
         )
 
-    # MITRE techniques
     if ev["mitre_techniques"]:
         parts.append(
             f"The observed behaviour maps to MITRE ATT&CK techniques: "
             f"{', '.join(ev['mitre_techniques'])}."
         )
 
-    # Affected assets
     if ev["assets"]:
         parts.append(f"Affected asset(s): {_format_list(ev['assets'])}.")
 
-    # Threat intelligence
     if ev["threat_intel"]:
         parts.append(
             "Threat intelligence indicators corroborate suspicious activity."
         )
 
-    # Physical correlation
     if ev["physical_correlation"]:
         pc = ev["physical_correlation"]
         signal = pc.get("physical_signal", "physical signal")

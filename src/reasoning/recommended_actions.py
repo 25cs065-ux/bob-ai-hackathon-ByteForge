@@ -93,42 +93,36 @@ def recommend_actions(incident: Incident) -> Incident:
     # ------------------------------------------------------------------ #
     techs = incident.mitre_techniques or []
 
-    # T1110 — Brute Force
     if "T1110" in techs or any(t.startswith("T1110") for t in techs):
         if not any("authentication logs" in a for a in actions):
             actions.append(
                 "Review authentication logs for repeated failed login attempts."
             )
 
-    # T1059 / T1059.001 — Command/Script Execution / PowerShell
     if "T1059" in techs or any(t.startswith("T1059") for t in techs):
         if not any("command or script" in a for a in actions):
             actions.append(
                 "Review command and script execution details in endpoint logs."
             )
 
-    # T1068 — Privilege Escalation
     if "T1068" in techs:
         if not any("privilege changes" in a for a in actions):
             actions.append(
                 "Review recent privilege changes on the affected system."
             )
 
-    # T1078 — Valid Accounts
     if "T1078" in techs:
         actions.append(
             "Verify whether any account credentials may have been compromised "
             "and review recent account activity."
         )
 
-    # T1021 — Remote Services
     if "T1021" in techs or any(t.startswith("T1021") for t in techs):
         actions.append(
             "Review remote service connections from the affected asset "
             "to identify potential lateral movement."
         )
 
-    # T1041 — Exfiltration Over C2 Channel
     if "T1041" in techs:
         if not any("data transfer" in a for a in actions):
             actions.append(
@@ -136,21 +130,18 @@ def recommend_actions(incident: Incident) -> Incident:
                 "over a command-and-control channel."
             )
 
-    # T1005 — Data from Local System
     if "T1005" in techs:
         actions.append(
             "Review file access activity on the affected system for signs "
             "of local data collection."
         )
 
-    # T1566 — Phishing
     if "T1566" in techs or any(t.startswith("T1566") for t in techs):
         actions.append(
             "Review email logs for suspicious messages and check whether "
             "any user interacted with phishing content."
         )
 
-    # T1204 — User Execution
     if "T1204" in techs or any(t.startswith("T1204") for t in techs):
         actions.append(
             "Investigate files or links that a user may have executed "
@@ -176,9 +167,10 @@ def recommend_actions(incident: Incident) -> Incident:
         )
 
     # ------------------------------------------------------------------ #
-    # 9. Physical correlation
+    # 9. Physical correlation — only when a signal was actually found
     # ------------------------------------------------------------------ #
-    if incident.physical_correlation:
+    pc = incident.physical_correlation
+    if pc and pc.get("correlated"):
         actions.append(
             "Validate the physical/geospatial signal against the affected "
             "asset and its expected activity."
