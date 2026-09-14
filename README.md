@@ -8,8 +8,8 @@
 |---|---|
 | **Team Name** | ByteForge |
 | **Track** | AI |
-| **Team Lead** | Patel Khushi — 25cs065@charusat.edu.in.com |
-| **Members** | Nandani Patel, Siddhi Panchal, yatri Dekivadiya |
+| **Team Lead** | [Patel Khushi] — [25cs065@charusat.edu.in.com] |
+| **Members** | [Nandani Patel], [Siddhi Panchal], [yatri Dekivadiya] |
 
 ---
 
