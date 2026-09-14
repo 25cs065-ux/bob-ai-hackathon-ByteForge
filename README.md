@@ -1,4 +1,4 @@
-# 🚀 [Your Project Title Here]
+# Threat Intelligence Correlation & Alert Prioritisation Assistant
 
 ---
 
@@ -8,8 +8,8 @@
 |---|---|
 | **Team Name** | ByteForge |
 | **Track** | AI |
-| **Team Lead** | [Patel Khushi] — [25cs065@charusat.edu.in.com] |
-| **Members** | [Nandani Patel], [Siddhi Panchal], [yatri Dekivadiya] |
+| **Team Lead** | Khushi Patel — 25cs065@charusat.edu.in |
+| **Members** | Nandani Patel, Siddhi Panchal, Yatri Dekivadiya |
 
 ---
 
@@ -38,7 +38,7 @@ Center dashboard with a live AI analyst assistant.
 
 ## ✨ Key Features
 
-- **AI Alert Correlation & Incident Clustering:** Groups related alerts from SIEM, sensors, intel reports, and satellite feeds into single, unified incidents instead of thousands of disconnected events.
+- **Multi-Source Alert Correlation & Incident Clustering:** Groups related alerts from SIEM, sensors, intel reports, and satellite feeds into single, unified incidents instead of thousands of disconnected events.
 - **Dynamic Risk Scoring, Prioritisation & Threat DNA:** Assigns each incident a 0–100 risk score and Critical/High/Medium/Low priority, and generates a unique behavioural fingerprint that can recognise the same attacker even after they change IP or malware.
 - **MITRE ATT&CK Mapping & Cyber-Physical Threat Fusion:** Maps observed attacker behaviour to MITRE technique IDs and correlates cyber alerts against simulated satellite/geospatial signals for a fused threat picture.
 - **AI Investigation Assistant & BLUF Report Generator:** Answers free-text analyst questions grounded in incident evidence and auto-generates structured Threat/Impact/Confidence/Evidence/Next-Steps reports for commanders.
@@ -61,31 +61,29 @@ Center dashboard with a live AI analyst assistant.
 ## 📁 Repository Structure
 
 ```
-├── src/ # All source code
-│ ├── shared/ # Shared Incident data contract
-│ ├── ingestion/ # Multi-source ingestion, normalization, correlation, clustering
-│ ├── detection/ # False-positive detection, risk scoring, prioritisation, Threat DNA
-│ ├── context/ # MITRE mapping, attack timeline, intel enrichment, cyber-physical fusion
-│ ├── reasoning/ # AI assistant, BLUF generator, recommended actions, kill-chain forecasting
-│ ├── frontend/ # Streamlit Command Center dashboard
-│ └── main.py # Pipeline orchestrator
-├── docs/ # Written documentation
-│ ├── problem-statement.md
-│ ├── solution-overview.md
-│ ├── architecture.md
-│ └── setup-guide.md
-├── demo/ # Demo artifacts
-│ ├── screenshots/ # App screenshots
-│ └── demo-video-link.txt # Link to demo video
-├── presentation/ # Slide deck
-└── submission.yaml # Structured submission metadata
+├── src/                  # All source code
+│   ├── shared/           # Shared Incident data contract
+│   ├── ingestion/        # Multi-source ingestion, normalization, correlation, clustering
+│   ├── detection/        # False-positive detection, risk scoring, prioritisation, Threat DNA
+│   ├── context/          # MITRE mapping, attack timeline, intel enrichment, cyber-physical fusion
+│   ├── reasoning/        # AI assistant, BLUF generator, recommended actions, kill-chain forecasting
+│   ├── frontend/         # Streamlit Command Center dashboard
+│   └── main.py           # Pipeline orchestrator
+├── docs/                 # Written documentation
+│   ├── problem-statement.md
+│   ├── solution-overview.md
+│   ├── architecture.md
+│   └── setup-guide.md
+├── demo/                 # Demo artifacts
+│   ├── screenshots/      # App screenshots
+│   └── demo-video-link.txt
+├── presentation/         # Slide deck
+└── submission.yaml       # Structured submission metadata
 ```
 
 ---
 
 ## ⚡ How to Run
-
-> **Copy these exact steps from your [`docs/setup-guide.md`](docs/setup-guide.md)**
 
 ```bash
 # 1. Clone the repo
@@ -113,10 +111,10 @@ troubleshooting.
 
 | Artifact | Link |
 |---|---|
-| 📹 Demo Video | [See demo/demo-video-link.txt](demo/demo-video-link.txt) |
-| 🌐 Live Demo | [See demo/live-demo-url.txt](demo/live-demo-url.txt) |
-| 🖼️ Screenshots | [See demo/screenshots/](demo/screenshots/) |
-| 📊 Presentation | [See presentation/slides.pdf](presentation/) |
+| 📹 Demo Video | [https://youtu.be/RB4gdMBzCgk](https://youtu.be/RB4gdMBzCgk) |
+| 🌐 Live Demo | Not deployed — run locally using [docs/setup-guide.md](docs/setup-guide.md) |
+| 🖼️ Screenshots | [demo/screenshots/](demo/screenshots/) |
+| 📊 Presentation | [presentation/slides.pdf](presentation/slides.pdf) |
 
 ---
 
